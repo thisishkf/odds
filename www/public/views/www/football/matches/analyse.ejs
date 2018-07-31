@@ -1,0 +1,85 @@
+<h3>Analyse
+    <%= data.match %>
+</h3>
+
+
+
+
+<table class="table" id="crs_table">
+    <caption>CRS</caption>
+    <thead>
+        <tr>
+            <th>Score</th>
+            <th>HKJC</th>
+            <th>ODDS.500</th>
+            <th>Diff</th>
+            <th>Analyse</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <% Object.keys(data.crs).forEach(function(ele){ %>
+            <tr id="<%ele%>">
+                <td>
+                    <% if (ele == 'SM1MH' ) { %>
+                        主其他
+                        <% } else if ( ele == 'SM1MA' ) { %>
+                            客其他
+                            <% } else if ( ele == 'SM1MD' ) { %>
+                                和其他
+                                <% } else  { %>
+                                    <%= parseInt(ele.substr(1,2)) %> :
+                                        <%=parseInt(ele.substr(-2)) %>
+                                            <% } %>
+                </td>
+                <td>
+                    <%=data.crs[ele].hkjc%>
+                </td>
+                <td>
+                    <%=data.crs[ele].odds500%>
+                </td>
+                <td class="diff">
+                    <%= parseFloat(data.crs[ele].diff).toFixed(2) %>
+                </td>
+                <td class="analyse">
+                    <%=data.crs[ele].analyse%>
+                </td>
+            </tr>
+            <% }) %>
+    </tbody>
+</table>
+
+
+<table class="table" id="ttgo_table">
+    <caption>TTGO</caption>
+    <thead>
+        <tr>
+            <th>Score</th>
+            <th>HKJC</th>
+            <th>William Hill</th>
+            <th>Diff</th>
+            <th>Analyse</th>
+        </tr>
+    </thead>
+    <tbody>
+        <% Object.keys(data.ttgo).forEach(function(ele){ %>
+            <tr id="<%ele%>">
+                <td>
+                    <%=ele%>
+                </td>
+                <td>
+                    <%=data.ttgo[ele].hkjc%>
+                </td>
+                <td>
+                    <%=data.ttgo[ele].wh%>
+                </td>
+                <td class="diff">
+                    <%=parseFloat(data.ttgo[ele].diff).toFixed(2)%>
+                </td>
+                <td class="analyse">
+                    <%=data.ttgo[ele].analyse%>
+                </td>
+            </tr>
+            <% }) %>
+    </tbody>
+</table>
