@@ -31,6 +31,16 @@ Array.prototype.mergeEveryNElement = function (n) {
     return tmp;
 }
 
+const _getMatch = function(hkjc){
+    return new Promise(resolve => {
+        mongodb.get()
+            .collection('match')
+            .findOne({hkjc : hkjc} , function(err, res){
+                resolve(res);
+            });
+    });
+}
+
 const _getMatchList = function () {
     return new Promise(resolve => {
         mongodb.get()
@@ -447,6 +457,7 @@ const _formatChartData = function (result) {
 }
 
 module.exports = {
+    getMatch:_getMatch,
     getMatchList: _getMatchList,
     getAllOdds: _getAllOdds,
     getHDA: _getHDA,

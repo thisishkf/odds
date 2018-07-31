@@ -28,6 +28,7 @@ _router.post('/init/analyse', async function (req, res) {
 
 _router.get('/data/:hkjc_id', async function (req, res) {
 	let model = getmodel('www', ['football/data.js']);
+	model.main.data = await(HKJCService.getMatch(req.params.hkjc_id));
 	_render(res, 'football/matches/data.ejs', model);
 });
 
