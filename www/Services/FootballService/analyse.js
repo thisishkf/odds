@@ -19,7 +19,6 @@ const _analyse = async function (hkjc_id, odds500_id, wh_id) {
     let hkjcOdds = await hkjc.getAnalyse(hkjc_id);
     let odds500CRS = await odds500.getCRS(odds500_id);
     let whTTGO = await williamHill.getTTGO(wh_id);
-
     return new Promise(function (resolve) {
         let result = {
             match : hkjcOdds.match,

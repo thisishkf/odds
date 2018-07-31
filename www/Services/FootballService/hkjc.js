@@ -189,7 +189,7 @@ const _getAnalyse = function (id) {
             mongodb.get().collection('hkjc_raw')
                 .findOne(criteria, function (err, doc) {
                     assert.equal(err, null);
-                    data.match = `${doc.home.name} - ${doc.away.name}`;
+                    data.match = `${doc.home.teamNameCH} - ${doc.away.teamNameCH}`;
                     Object.keys(doc._raw.crsodds).forEach(function (score, i) {
                         if (score.indexOf("S") == 0) {
                             data.crs[score] = doc._raw.crsodds[score].split("@")[1];
