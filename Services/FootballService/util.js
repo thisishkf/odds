@@ -1,3 +1,0 @@
-const makeLineChart = function(data){
-
-}
