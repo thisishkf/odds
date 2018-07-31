@@ -1,0 +1,93 @@
+<h3>Matches List</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>League</th>
+            <th>Home</th>
+            <th>Away</th>
+            <th>Time</th>
+            <th>ODDS</th>
+            <th>Analyse</th>
+            <th>Result</th>
+        </tr>
+    </thead>
+    <thead>
+        <% data.forEach(function(ele){ %>
+            <tr data-id="<%= ele.hkjc %>">
+            <td>
+                    <%= ele.league.leagueNameCH %>
+                </td>
+                <td>
+                    <%= ele.home.teamNameCH %>
+                </td>
+                <td>
+                    <%= ele.away.teamNameCH %>
+                </td>
+                <td>
+                    <%= ele.time.split("T")[0] %> <br/>
+                    <%= ele.time.split("T")[1] %>
+                </td>
+                <td>
+                    <button class="btn btn-success all_odds">Go</button>
+                </td>
+                <td>
+                    <% if (ele.odds500ID == null || ele.whID == null){ %>
+                        <button class="btn btn-warning anaylse_create">Create</button>
+                        <% } else { %>
+                            <button class="btn btn-primary anaylse_show" data-odds="<%= ele.odds500ID %>" data-wh="<%= ele.whID %>">Show</button>
+                            <% } %>
+                </td>
+                <td>
+                    <% if (ele.result == null ){ %>
+                        <button class="btn btn-dark">N.A.</button>
+                        <% } else { %>
+                            <button class="btn btn-primary">Show</button>
+                            <% } %>
+                </td>
+            </tr>
+            <% }) %>
+    </thead>
+</table>
+
+
+<div class="modal fade" id="anaylse_create_panel" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Init Analyze</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Please Confirm/Enter Match ID for following site:</p>
+                <div>
+                    <form id="anaylse_init_form" action="/football/init/analyse" method="POST">
+                    <input type="hidden" name="hkjc_id" id="hkjc_id"/>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-xs-12">
+                            <a href="http://odds.500.com/" target="_blank">ODDS.500 :</a>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-xs-12">
+                            <input type="text" name="odds500_id" id="odds500_id" />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-xs-12">
+                            <a href="http://sports.williamhill.com/bet/zh-hk/betting/y/5/%E8%B6%B3%E7%90%83.html" target="_blank">William Hill :</a>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-xs-12">
+                            <input type="text" name="wh_id" id="wh_id" />
+                        </div>
+                    </div>
+                    </form>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button id="analyse_init" class="btn btn-success">Init</button>
+                </div>
+            </div>
+        </div>
+    </div>
