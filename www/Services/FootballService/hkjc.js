@@ -31,11 +31,11 @@ Array.prototype.mergeEveryNElement = function (n) {
     return tmp;
 }
 
-const _getMatch = function(hkjc){
+const _getMatch = function (hkjc) {
     return new Promise(resolve => {
         mongodb.get()
             .collection('match')
-            .findOne({hkjc : hkjc} , function(err, res){
+            .findOne({ hkjc: hkjc }, function (err, res) {
                 resolve(res);
             });
     });
@@ -302,28 +302,35 @@ const _makeChart = function (data) {
         hilodds: {}, fhlodds: {}, chlodds: {},
         hftodds: {}
     };
+
     data.forEach(function (ele) {
         result.ts.push(new Date(ele.ts).getTime());
         for (let odd of ['hadodds', 'fhaodds']) {
             for (let subodd of ['H', 'D', 'A']) {
-                result[odd][subodd].push(parseFloat(ele._raw[odd][subodd].split("@")[1]));
+                if (odd in ele._raw && subodd in ele._raw[odd]) {
+                    result[odd][subodd].push(parseFloat(ele._raw[odd][subodd].split("@")[1]));
+                }
             }
         }
 
         for (let subodd of ['H', 'D', 'A', 'HG']) {
-            if (subodd == 'HG') {
-                result.hhaodds[subodd].push(parseFloat(ele._raw.hhaodds[subodd]));
-            } else {
-                result.hhaodds[subodd].push(parseFloat(ele._raw.hhaodds[subodd].split("@")[1]));
+            if (subodd in ele._raw.hhaodds) {
+                if (subodd == 'HG') {
+                    result.hhaodds[subodd].push(parseFloat(ele._raw.hhaodds[subodd]));
+                } else {
+                    result.hhaodds[subodd].push(parseFloat(ele._raw.hhaodds[subodd].split("@")[1]));
+                }
             }
         }
 
         for (let subodd of ['H', 'A', 'HG']) {
-            if (subodd == 'HG') {
-                let _rate = ele._raw.hdcodds[subodd].split("/");
-                result.hdcodds[subodd].push((parseFloat(_rate[0]) + parseFloat(_rate[1])) / 2);
-            } else {
-                result.hdcodds[subodd].push(parseFloat(ele._raw.hdcodds[subodd].split("@")[1]));
+            if ('hdcodds' in ele._raw && subodd in ele._raw.hdcodds) {
+                if (subodd == 'HG') {
+                    let _rate = ele._raw.hdcodds[subodd].split("/");
+                    result.hdcodds[subodd].push((parseFloat(_rate[0]) + parseFloat(_rate[1])) / 2);
+                } else {
+                    result.hdcodds[subodd].push(parseFloat(ele._raw.hdcodds[subodd].split("@")[1]));
+                }
             }
         }
 
@@ -338,7 +345,9 @@ const _makeChart = function (data) {
         });
 
         for (let subodd of ['O', 'E']) {
-            result.ooeodds[subodd].push(parseFloat(ele._raw.ooeodds[subodd].split("@")[1]));
+            if (subodd in ele._raw.ooeodds) {
+                result.ooeodds[subodd].push(parseFloat(ele._raw.ooeodds[subodd].split("@")[1]));
+            }
         }
 
         for (let odd of ['crsodds', 'fcsodds']) {
@@ -353,10 +362,12 @@ const _makeChart = function (data) {
         }
 
         for (let subodd of ['N', 'H', 'A']) {
-            if (!(subodd in result.ftsodds)) {
-                result.ftsodds[subodd] = [];
+            if (subodd in ele._raw.ftsodds) {
+                if (!(subodd in result.ftsodds)) {
+                    result.ftsodds[subodd] = [];
+                }
+                result.ftsodds[subodd].push(ele._raw.ftsodds[subodd].split("@")[1])
             }
-            result.ftsodds[subodd].push(ele._raw.ftsodds[subodd].split("@")[1])
         }
 
         for (let odd of ['hilodds', 'fhlodds']) {
@@ -434,7 +445,7 @@ const _formatChartData = function (result) {
     }
 
     for (let odd of ['hilodds', 'fhlodds']) {
-        Object.keys(result[odd]).sort().forEach(function(subodd){
+        Object.keys(result[odd]).sort().forEach(function (subodd) {
             for (let LH of ['L', 'H']) {
                 result[odd][subodd][LH] = _combineArray(result[odd][subodd][LH]);
             }
@@ -442,7 +453,7 @@ const _formatChartData = function (result) {
     }
 
     if ('chlodds' in result) {
-        Object.keys(result.chlodds).sort().forEach(function(subodd){
+        Object.keys(result.chlodds).sort().forEach(function (subodd) {
             for (let LH of ['L', 'H']) {
                 result.chlodds[subodd][LH] = _combineArray(result.chlodds[subodd][LH]);
             }
@@ -457,7 +468,7 @@ const _formatChartData = function (result) {
 }
 
 module.exports = {
-    getMatch:_getMatch,
+    getMatch: _getMatch,
     getMatchList: _getMatchList,
     getAllOdds: _getAllOdds,
     getHDA: _getHDA,

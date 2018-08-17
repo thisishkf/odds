@@ -50,7 +50,6 @@ const _insertDB = function (match, odds) {
         .collection('hkjc_raw')
         .insertOne(doc, function (err, res) {
             assert.equal(err, null);
-            console.log(res);
             Logger.info(`getOdds() added ${doc.hkjc}`);
         });
 
@@ -64,7 +63,7 @@ const _getOdds = async function () {
         if (odds) {
             _insertDB(match, odds);
         } else if (match.result == null) {
-            getResult(match);
+            // getResult(match);
         }
     }
     Logger.info(`Cron Job getOdds() finished`);

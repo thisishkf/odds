@@ -5,7 +5,6 @@ var nameList = {
     'fcsodds': "半場波膽",
     'fhaodds': "半場主客和",
     "fhlodds": "半場入球大細",
-    "ftsodds": "首隊入球",
     'hadodds': "主客和",
     "hdcodds": "亞洲讓盤",
     'hftodds': "半全場",
@@ -66,6 +65,7 @@ const getType = function (score) {
 
 const drawCharts = function (data) {
     let ts = data.ts;
+    console.log(data);
     Object.keys(data).forEach(function (ele) {
         switch (ele) {
             case 'crsodds':
@@ -87,6 +87,7 @@ const drawCharts = function (data) {
                 break;
             case 'fhlodds':
             case 'hilodds':
+            case 'chlodds':
                 let temp = {};
                 Object.keys(data[ele]).sort().forEach(function (score, i) {
                     let key = score.split('/');
@@ -121,7 +122,6 @@ const drawCharts = function (data) {
             case 'fhaodds':
             case 'hadodds':
             case 'hhaodds':
-                console.log(data[ele]);
                 new Chart(
                     document.getElementById(`${ele}`).getContext('2d'),
                     makeMultiLineChartJsConfig(data[ele], ts, nameList[ele])

@@ -10,13 +10,18 @@ Date.prototype.getFullDate = function () {
     if (month < 10) {
         month = `0${month}`;
     }
+    if (day < 10) {
+        day = `0${day}`;
+    }
     let day = target.getDate();
     return `${year}${month}${day}`;
 }
 
 const _getResultData = function (match) {
     const API = "http://bet.hkjc.com/football/getJSON.aspx?jsontype=search_result.aspx&startdate=#STARTDATE#&enddate=#ENDDATE#&teamid=#TEAMID#";
-    let _date = new Date(match.time).getFullDate();
+    
+    console.log(match.time, new Date(match.time));
+    let _date = (new Date(match.time)).getFullDate();
     const options = {
         method: 'GET',
         url: API.replace('#STARTDATE#', _date).replace('#ENDDATE#', _date).replace('#TEAMID#', match.home.teamID),
@@ -27,11 +32,16 @@ const _getResultData = function (match) {
         Logger.info(`Getting ${options.url}`);
         request(options, function (error, response, html) {
             if (!error && response.statusCode == 200) {
-                let result = JSON.parse(html);
-                resolve(result[0] || result);
+                console.log(html);
+                try {
+                    let result = JSON.parse(html);
+                    resolve(result[0] || result);
+                } catch (err) {
+                }
             }
         });
     });
+
 }
 
 const _insertDB = function (match) {
