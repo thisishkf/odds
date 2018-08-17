@@ -25,22 +25,14 @@ app.use('/static', express.static(__dirname + '/public/static'));
 // Includes Router
 app.use('/football', require('./Controller/FootballController'));
 
-socketio.on('connection', function (socket) {
-	socket.emit('hi', 'hi');
-
-	socket.on('status', function (message) {
-		let data = JSON.parse(message);
-		socket.emit(`status${data.client}`, 'result');
-	});
-
-});
-
-
 
 const serverOnCreate = function () {
-	server.listen(port, async function () {
-		await mongodb.connect();
-		serverOnStart();
+	return new Promise(resolve => {
+		server.listen(port, async function () {
+			await mongodb.connect();
+			serverOnStart();
+			resolve(true);
+		});
 	});
 }
 
