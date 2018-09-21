@@ -1,7 +1,5 @@
 const request = require('request');
-const assert = require('assert');
-const mongodb = require(__dirname + '/../../lib/MongoService');
-const Logger = require(__dirname + '/../../lib/Logger');
+const Logger = require(__dirname + '/../../lib/logger');
 
 Date.prototype.getFullDate = function () {
     let target = this;

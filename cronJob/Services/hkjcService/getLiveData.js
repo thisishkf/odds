@@ -1,7 +1,6 @@
 const request = require('request');
 const assert = require('assert');
-const mongodb = require(__dirname + '/../../lib/MongoService');
-const Logger = require(__dirname + '/../../lib/Logger');
+const logger = require(__dirname + '/../../lib/logger');
 
 const _getLiveMatch = function (match) {
     let homeAway = `${match.home}-${match.away}`;

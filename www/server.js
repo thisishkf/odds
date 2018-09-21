@@ -27,7 +27,7 @@ app.use('/football', require('./Controller/FootballController'));
 
 
 const serverOnCreate = function () {
-	return new Promise(resolve => {
+	return new Promise(function (resolve) {
 		server.listen(port, async function () {
 			await mongodb.connect();
 			serverOnStart();

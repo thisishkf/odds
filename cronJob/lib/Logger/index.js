@@ -1,81 +1,79 @@
 /**
  * @author 		Sam Ho <hkf1113@gmail.com>
  * @create 		2018-04-19
- * @modified 	2018-05-16
+ * @modified 	2018-08-02
  */
 
 const fs = require('fs');
 
-const config = require(__dirname + '/../../config').Logger;
-const { COLOR, LEVEL, DAYS } = require(__dirname + '/constant');
+const { color, level, days } = require(__dirname + '/constant');
 
-const _info = function (msg) {
-	writeLog("INFO", COLOR.Black, `\t${msg}`);
+var state = null;
+
+const init = function (config) {
+	state = config;
 };
 
-const _debug = function (msg) {
-	writeLog("DEBUG", COLOR.Black, `\t${msg}`);
+const info = function (msg) {
+	writeLog("info", color.default, `\t${msg}`);
 };
 
-const _error = function (msg) {
-	writeLog("ERROR", COLOR.Red, msg);
+const debug = function (msg) {
+	writeLog("debug", color.default, `\t${msg}`);
 };
 
-const _warn = function (msg) {
-	writeLog("WARN", COLOR.Yellow, `\t${msg}`);
+const error = function (msg) {
+	writeLog("error", color.red, msg);
 };
 
-const _access = function (req) {
+const warn = function (msg) {
+	writeLog("warn", color.yellow, `\t${msg}`);
+};
+
+const access = function (req) {
 	let msg = makeAccessLog(req);
-	writeLog("TRACE", COLOR.Black, msg);
-}
-
+	writeLog("trace", color.default, msg);
+};
 
 /**
- * 
- * @param {string} type 
- * @param {string} color 
- * @param {string} msg 
+ *
+ * @param {string} type
+ * @param {string} color
+ * @param {string} msg
  */
-const writeLog = function (type, color, msg = "") {
+const writeLog = function (type, textColor, msg = "") {
 	try {
-		let { week, day, time } = getDayInfo();
-		let text = `${week} ${day} ${time} [${process.pid}][${type}]\t ${msg}`;
-		switch (type) {
-			case "TRACE":
-				log2File(type, text);
-				break;
-			default:
-				console.log(color, text);
-				log2File(type, text);
+		let { date, time } = getDayInfo();
+		let text = `${date} ${time} [${process.pid}][${type}]\t ${msg}`;
+		console.log(textColor, text, color.reset);
+		if (level[state.level] > level[type] && state) {
+			log2File(type, text);
 		}
 	} catch (err) {
-		let { week, day, time } = getDayInfo();
-		text = `${week} ${day} ${time} [thread id: ${process.pid}][${type}]\t ${JSON.stringify(err)}`;
-		console.log(COLOR.Red, text);
+		console.log(err);
+		let { date, time } = getDayInfo();
+		text = `${date} ${time} [thread id: ${process.pid}][${type}]\t ${JSON.stringify(err)}`;
+		console.log(color.red, text, color.reset);
 	}
 };
 
 /**
  * Write logging information to file
- * 
+ *
  * @param {string} type 	Logging type (logger level)
  * @param {string} text 	Logging information
  */
-const log2File = function (type = "DEBUG", text = "") {
-	//preapre file
+const log2File = function (type = "debug", text = "") {
+	//prepare file
 	let { date } = getDayInfo();
-	var fileName = config.filePath;
+	var fileName = state.filepath;
 	switch (type) {
-		case "ERROR":
-			fileName += config.fileName.ERROR;
+		case "error":
+			fileName += state.filename.error;
 			break;
-		case "TRACE":
-			fileName += config.fileName.ACCESS;
-			break;
-		case "DEBUG":
+		case "debug":
 		default:
-			fileName += config.fileName.DEBUG;
+			fileName += state.filename.debug;
 	}
 	fileName = fileName.replace("{DATE}", date);
 	//writing out message
@@ -90,7 +88,7 @@ const log2File = function (type = "DEBUG", text = "") {
 			}
 		});
 	} catch (err) {
-		console.log(err);
+		process.stdout.write(err);
 	}
 };
 
@@ -102,9 +100,9 @@ const getDayInfo = function () {
 	let today = new Date();
 	let year = `${today.getFullYear()}`;
 	let month = today.getMonth() + 1;
-	month = today.getMonth() >= 10 ? `${today.getMonth()}` : `0${today.getMonth()}`;
+	month = month >= 10 ? `${month}` : `0${month}`;
 	let day = today.getDate() >= 10 ? `${today.getDate()}` : `0${today.getDate()}`;
-	let week = DAYS[today.getDay()];
+	let week = days[today.getDay()];
 
 	let hour = today.getHours() >= 10 ? `${today.getHours()}` : `0${today.getHours()}`;
 	let min = today.getMinutes() >= 10 ? `${today.getMinutes()}` : `0${today.getMinutes()}`;
@@ -120,12 +118,12 @@ const getDayInfo = function () {
 		time: time,
 		date: date
 	};
-}
+};
 
 /**
  * make Access Log
- * 
- * @param 	{Obecjt} req 	Express Request Object
+ *
+ * @param 	{Object} req 	Express Request Object
  * @return 	{string} Access Log Information
  */
 const makeAccessLog = function (req) {
@@ -146,12 +144,13 @@ const makeAccessLog = function (req) {
 		msg = msg.replace(`{${key}}`, data[key]);
 	});
 	return msg;
-}
+};
 
 module.exports = {
-	info: _info,
-	debug: _debug,
-	error: _error,
-	warn: _warn,
-	access: _access
+	init: init,
+	info: info,
+	debug: debug,
+	error: error,
+	warn: warn,
+	access: access
 };

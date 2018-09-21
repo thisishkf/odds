@@ -1,0 +1,9 @@
+{
+	"name": "lib",
+	"description": "Shared Library for Nodejs",
+	"version": "0.1.0",
+	"dependencies": {
+		"fs": "0.0.1-security",
+		"mysql": "^2.16.0"
+	}
+}
