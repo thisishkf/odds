@@ -1,24 +1,23 @@
 const CronJob = require('cron').CronJob;
-const grepHKJCDataService = require(__dirname + '/../grepHKJCData');
+const hkjcService = require(__dirname + '/../hkjcService');
 
-const _getMatchesJob = function (cronTime) {
+const getMatchesJob = function (cronTime) {
     return new CronJob({
         cronTime: cronTime,
         onTick: function () {
-            console.log();
-            grepHKJCDataService.getMatch();
+            hkjcService.getMatches();
         },
         start: false,
         timeZone: 'Asia/Hong_Kong'
     });
 }
 
-const _getOddsJob = function (cronTime) {
+const getOddsJob = function (cronTime) {
     return new CronJob({
         cronTime: cronTime,
         onTick: function () {
             console.log();
-            grepHKJCDataService.getOdds();
+            hkjcService.getOdds();
         },
         start: false,
         timeZone: 'Asia/Hong_Kong'
@@ -26,6 +25,6 @@ const _getOddsJob = function (cronTime) {
 }
 
 module.exports = {
-    getMatchesJob: _getMatchesJob,
-    getOddsJob: _getOddsJob
+    getMatchesJob: getMatchesJob,
+    getOddsJob: getOddsJob
 }

@@ -46,7 +46,7 @@ const writeLog = function (type, textColor, msg = "") {
 		let { date, time } = getDayInfo();
 		let text = `${date} ${time} [${process.pid}][${type}]\t ${msg}`;
 		console.log(textColor, text, color.reset);
-		if (level[state.level] > level[type] && state) {
+		if (state && level[state.level] > level[type]) {
 			log2File(type, text);
 		}
 	} catch (err) {
@@ -65,6 +65,10 @@ const writeLog = function (type, textColor, msg = "") {
  */
 const log2File = function (type = "debug", text = "") {
 	//prepare file
+	if (!state) {
+		return;
+	}
+	console.log(state);
 	let { date } = getDayInfo();
 	var fileName = state.filepath;
 	switch (type) {
@@ -75,6 +79,7 @@ const log2File = function (type = "debug", text = "") {
 		default:
 			fileName += state.filename.debug;
 	}
+
 	fileName = fileName.replace("{DATE}", date);
 	//writing out message
 	try {

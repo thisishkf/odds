@@ -5,9 +5,7 @@ CREATE TABLE `match` (
     `league_id` int(8) unsigned NOT NULL,
     `home_team_id` int(8) unsigned NOT NULL,
     `away_team_id` int(8) unsigned NOT NULL,
-    `matchTime` 
-    `matchDate`
-    `matchDay`
+    `match_time` varchar(30),
     `create_date` date,
     `create_time` time,
     `create_ts` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -39,13 +37,19 @@ CREATE TABLE `match_odds` (
 CREATE TABLE `match_result` (
     `match_id` bigint(20) unsigned NOT NULL,
     `platform_id` int(8) unsigned NOT NULL,
-    // TODO
+    `half_home` tinyint(2) unsigned NOT NULL DEFAULT 0,
+    `half_away` tinyint(2) unsigned NOT NULL DEFAULT 0,
+    `full_home` tinyint(2) unsigned NOT NULL DEFAULT 0,
+    `half_away` tinyint(2) unsigned NOT NULL DEFAULT 0,
+    `half_corner` tinyint(2) unsigned NOT NULL DEFAULT 0,
+    `full_corner` tinyint(2) unsigned NOT NULL DEFAULT 0,
     `create_date` date,
     `create_time` time,
     `create_ts` timestamp NOT NULL DEFAULT current_timestamp(),
     UNIQUE KEY (`match_id`)
 ) ENGINE=InnoDB;
 
+-- TODO
 CREATE TABLE `match_analyse` (
 
 ) ENGINE=InnoDB;

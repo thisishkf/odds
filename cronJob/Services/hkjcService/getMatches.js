@@ -1,9 +1,11 @@
-const request = require('request');
+const { asyncRequest } = require(__dirname + '/../../lib/request');
+const logger = require(__dirname + '/../../lib/logger');
+const matchDao = require(__dirname + '/../../dao/match');
 
 const getMatchList = async function () {
     const API = "http://bet.hkjc.com/football/getJSON.aspx?jsontype=odds_allodds.aspx";
     const options = {
-        method: 'GET', url: API, gzip: true, jar: true,
+        method: 'GET', url: API, gzip: true,
         headers: {
             'Host': 'bet.hkjc.com',
             'Connection': 'keep-alive',
@@ -15,44 +17,44 @@ const getMatchList = async function () {
         }
     };
     try {
-        let data = await asyncRequest(options);
-        let { response, html } = data;
-        if (response.statu != 200) {
+        let { response, html } = await asyncRequest(options);
+        if (response.statusCode == 200) {
+            try {
+                let data = JSON.parse(html);
+                return data;
+            } catch (err) {
+                console.log(response.headers);
+                logger.debug(err.stack);
+                // return getMatchList();
+            }
+        }
+        if (response.statusCode > 300 && response.statusCode < 400) {
             throw new Error();
         }
-        return JSON.parse(html);
     } catch (err) {
         throw err;
     }
 }
 
-const asyncRequest = function (options) {
-    return new Promise(function (resolve, reject) {
-        request(options, function (error, response, html) {
-            if (error) {
-                return reject(error);
-            }
-            return resolve({ response, html });
-        });
-    });
-}
-
-const _getMatches = async function () {
+const getMatches = async function () {
     let MatchList = await getMatchList();
 
     for (let match of MatchList) {
-        let data = await getMatch(match.matchID)
-        _insertDB(data);
+        let homeTeamId = teamDao.selectByPlatformTeamId(match.homeTeam.teamID);
+        let awayTeamId = teamDao.selectByPlatformTeamId(match.awayTeam.teamID);
+        await matchDao.insertMatch(
+            platformId,
+            match.matchID,
+            null,
+            homeTeamId,
+            awayTeamId,
+            match.matchTime
+        );
     };
 }
 
 module.exports = {
-    getMatches: _getMatches
+    getMatches: getMatches
 }
 
-const main = async function () {
-    let res = await getMatchList();
-    console.log(res);
-}
-
-main();
+getMatches();

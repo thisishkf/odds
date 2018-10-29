@@ -26,16 +26,16 @@ const ODD_TYPE = {
     hadodds: "主客和",
 };
 
-definedPools:
-   [ 'HAD',
-     'FHA',
-     'CRS',
-     'FCS',
-     'FTS',
-     'OOE',
-     'TTG',
-     'HFT',
-     'HHA',
-     'HDC',
-     'HIL',
-     'FHL' ],
+definedPools =
+    ['HAD',
+        'FHA',
+        'CRS',
+        'FCS',
+        'FTS',
+        'OOE',
+        'TTG',
+        'HFT',
+        'HHA',
+        'HDC',
+        'HIL',
+        'FHL'];

@@ -1,24 +1,12 @@
 const request = require('request');
-const Logger = require(__dirname + '/../../lib/logger');
-
-Date.prototype.getFullDate = function () {
-    let target = this;
-    let year = target.getFullYear();
-    let month = target.getMonth() + 1;
-    if (month < 10) {
-        month = `0${month}`;
-    }
-    if (day < 10) {
-        day = `0${day}`;
-    }
-    let day = target.getDate();
-    return `${year}${month}${day}`;
-}
+const logger = require(__dirname + '/../../lib/logger');
+const moment = require('moment');
 
 const _getResultData = function (match) {
     const API = "http://bet.hkjc.com/football/getJSON.aspx?jsontype=search_result.aspx&startdate=#STARTDATE#&enddate=#ENDDATE#&teamid=#TEAMID#";
     
     console.log(match.time, new Date(match.time));
+    moment(match.match_time).format('YYYYMMDD');
     let _date = (new Date(match.time)).getFullDate();
     const options = {
         method: 'GET',
